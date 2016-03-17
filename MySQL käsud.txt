@@ -1,0 +1,3 @@
+SELECT value from adjectives INNER JOIN login ON adjectives.id=login.id
+
+SELECT value from adjectives INNER JOIN relations ON adjectives.id=relations.adjectiveID INNER JOIN login WHERE id=1 ON relations.userID=login.id
