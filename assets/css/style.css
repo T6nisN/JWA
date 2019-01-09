@@ -1,0 +1,438 @@
+@import http://fonts.googleapis.com/css?family=Raleway;
+/*----------------------------------------------
+CSS Settings For HTML Div ExactCenter
+------------------------------------------------*/
+#main {
+width:960px;
+margin:50px auto;
+font-family:raleway
+}
+span {
+color:red
+}
+h1{
+	color:#000!important;
+}
+h2 {
+background-color:#FEFFED;
+color:#000!important;
+text-align:center;
+border-radius:10px 10px 0 0;
+margin:-10px -40px;
+padding:15px
+}
+h3{
+	color:#000!important;
+}
+hr {
+border:0;
+border-bottom:1px solid #000;
+margin:10px -40px;
+margin-bottom:30px
+}
+p{
+	color:black;
+}
+i{
+	color:black;
+}
+.page-header{
+	border-bottom:1px solid black;
+}
+#login {
+width:300px;
+float:left;
+border-radius:10px;
+font-family:raleway;
+border:2px solid #ccc;
+padding:10px 40px 25px;
+margin-top:70px
+}
+#profile {
+padding:50px;
+border:1px dashed grey;
+font-size:20px;
+background-color:#DCE6F7
+}
+#logout {
+float:right;
+padding:5px;
+border:dashed 1px gray
+}
+a {
+text-decoration:none;
+color:#6495ed
+}
+.notification{
+	border-top-right-radius:4px;
+	background:red;
+	color:white;
+	text-align: center;
+	padding:15px 20px;
+	opacity:0;
+	position: fixed;
+	bottom:0px;
+	left:50%;
+	transition: all 0.3s;
+	z-index: 999;
+	transform:translateY(100px) translateX(-50%);
+}
+.notification.error{
+	background:red;
+}
+.notification.success{
+	background:green;
+}
+.notification.active{
+	transform:translateY(0) translateX(-50%);
+}
+.my-johar-table{
+	width:100%;
+
+}
+.my-johar-table tbody{
+	border:1px solid black;
+}
+.my-johar-table tbody tr{
+}
+.my-johar-table tbody tr th{
+	background: linear-gradient(-45deg, #EE7752, #E73C7E, #23A6D5, #23D5AB);
+background-size: 400% 400%;
+	border-bottom:2px solid black;
+	width:50%;
+	padding:15px;
+	-webkit-animation: Gradient 25s ease infinite;
+	-moz-animation: Gradient 25s ease infinite;
+	animation: Gradient 25s ease infinite;
+}
+.my-johar-table tbody tr th span{
+	color:white;
+	font-size:20px;
+	font-weight:normal;
+}
+.my-johar-table tbody tr td{
+	padding:15px;
+}
+.my-johar-table tbody tr td span{
+	display: inline-block;
+	margin-right:5px;
+	color:darkgrey;
+	font-size:16px;
+}
+.my-johar-table tbody tr td span:nth-of-type(3n + 1){
+	color:darkgreen;
+	font-size:18px;
+}
+.my-johar-table tbody tr td span:nth-of-type(4n + 3){
+	color:lightgreen;
+	font-size:20px;
+}
+.my-johar-table tbody tr td span:nth-of-type(5n + 3){
+	color:darkblue;
+	font-size:22px;
+}
+.adjective-buttons{
+	display: flex;
+	flex-wrap:wrap;
+	justify-content: space-around;
+	align-content: center;
+}
+.adjective-buttons div{
+	flex:1 10%;
+}
+#WhatButton{
+	display: flex;
+	flex-wrap: wrap;
+	margin-bottom:10px;
+	border-bottom:1px solid #eee;
+}
+#WhatButton div{
+	position: relative;
+	padding-bottom:10px;
+	padding-right:10px;
+}
+#WhatButton div input{
+}
+#WhatButton div span{
+	height:25px;
+	width:25px;
+	text-align: center;
+	vertical-align: middle;
+	border-radius:50%;
+	transition:all 0.3s;
+	color:grey;
+}
+#WhatButton div span:hover{
+	cursor:pointer;
+	color:red;
+}
+#WhatButton div span:after{
+	content:'✕';
+	height:25px;
+	width:25px;
+	top:50%;
+	left:50%;
+	transform:translateX(-50%) translateY(-50%);
+	font-size:18px;
+}
+#WhatButton input{
+	margin-bottom:5px;
+	border-radius:8px;
+	border:none;
+	background:#829399;
+	color:white;
+	transition: all 0.3s;
+	border:2px solid transparent;
+	padding:10px;
+	min-width:150px;
+	margin:0px;
+}
+#WhatButton input:hover{
+	border:2px solid black;
+}
+.adjective-buttons div span{
+ display: none;
+ position: absolute;
+ right:0px;
+}
+
+.adjective-button{
+	margin-bottom:5px;
+	border-radius:8px;
+	border:none;
+	background:#829399;
+	color:white;
+	transition: all 0.3s;
+	border:2px solid transparent;
+	padding:8px;
+	min-width:140px;
+	text-transform: uppercase;
+	font-size:14px;
+}
+.adjective-buttons div input:hover,.adjective-button:hover{
+	border:2px solid black;
+}
+.cta-button{
+	border:none;
+	background:#D0F4EA;
+	padding:10px 15px;
+	border-radius:8px;
+	border:2px solid transparent;
+	transition: all 0.3s;
+	color:black;
+}
+.cta-button:hover{
+	border:2px solid black;
+	text-decoration: none;
+}
+.personal-information{
+	margin-top:20px;
+
+}
+.personal-information span{
+	font-weight:bold;
+	color:black;
+
+}
+.friends-list{
+	list-style: none;
+	padding:0px;
+}
+.friends-list li p{
+	font-weight: bold;
+	text-transform: capitalize;
+}
+.friends-list li p button{
+	font-weight: normal;
+
+}
+.friends-list li p button:hover{
+	border:2px solid black;
+}
+#adjectivesLimit{
+	font-size:22px;
+	font-weight:#B1CC74;
+	color:darkblue;
+}
+
+
+/*Floating labels*/
+.form-group {
+  position: relative;
+  margin-bottom: 1.5rem;
+	margin-top:20px;
+}
+
+.form-control-placeholder {
+  position: absolute;
+  top: 10px;
+	left:10px;
+  transition: all 200ms;
+  opacity: 0.5;
+	font-weight: normal;
+	text-shadow: 2px 2px #fff;
+	background:#fff;
+	padding:0px 5px;
+	user-select: none;
+	backface-visibility: hidden;
+	border-top-right-radius:4px;
+	border-top-left-radius:4px;
+}
+.form-control-placeholder:hover {
+  cursor:text;
+}
+.form-group:focus{
+	outline:0;
+}
+.form-control{
+	padding:10px 15px;
+	height:42px;
+	border:1px solid black;
+}
+.form-control:focus{
+	outline:0;
+	box-shadow:none;
+}
+.form-control:focus + .form-control-placeholder,
+.form-control:valid + .form-control-placeholder {
+	top:5px;
+  transform: translate3d(0, -75%, 0);
+  opacity: 1;
+}
+.form-control:focus + .form-control-placeholder:hover,
+.form-control:valid + .form-control-placeholder:hover {
+	cursor:default;
+}
+.sidebar {
+  height: 100%; /* Full-height: remove this if you want "auto" height */
+  width: 300px; /* Set the width of the sidebar */
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  top: 0px; /* Stay at the top */
+  left: 0;
+	background-color: #f8f8f8;
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 70px;
+	border-right:1px solid #e7e7e7;
+	box-shadow: inset 1px 0px 0 rgba(255,255,255,.15),1px 0px 5px rgba(0,0,0,.075);
+}
+.sidebar .sidebar-footer{
+	position: absolute;
+	bottom:0px;
+	left:0px;
+	right:0px;
+	padding:15px 20px;
+	text-align: center;
+}
+.sidebar .sidebar-footer a{
+	display: inline-block;
+}
+.main {
+  margin-left: 300px; /* Same as the width of the sidebar */
+}
+.link{
+	display: inline-block;
+	color:black;
+	padding:0px 15px;
+}
+.link:hover{
+	text-decoration:underline;
+	cursor:pointer;
+	color:black;
+}
+.navbar{
+	z-index: 99;
+}
+.jwa-navbar{
+	background-color:#B1CC74;
+	color:black;
+	-webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+	box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+	border-bottom:0px!important;
+	border-radius:0px!important;
+}
+.jwa-navbar .navbar-brand{
+	color:black;
+}
+.jwa-navbar ul{
+
+}
+.jwa-navbar ul li{
+
+}
+.jwa-navbar ul li:hover{
+	background:none;
+}
+.jwa-navbar ul li a{
+	color:black;
+	border-bottom:2px solid transparent;
+	transition: all 0.3s;
+}
+.jwa-navbar ul li a:hover,.jwa-navbar ul li.active a{
+	background:none;
+	border-bottom:2px solid black;
+}
+.main-wrapper{
+	margin-bottom:180px;
+}
+.main-wrapper.main-wrapper--big{
+	margin-bottom:200px;
+}
+.content-background{
+	padding:25px 15px;
+	background:rgba(255,255,255,0.8);
+}
+footer{
+	background:#D0F4EA;
+	padding:25px 0px;
+	z-index: 99;
+	position: fixed;
+	bottom:0px;
+	width:100%;
+}
+footer hr{
+	border-top: 1px solid #000;
+}
+body.body-bg{
+	background:rgb(250,165,50);
+}
+.background-image{
+	position:fixed;
+	bottom:165px;
+	width:100%;
+}
+@-webkit-keyframes Gradient {
+	0% {
+		background-position: 0% 50%
+	}
+	50% {
+		background-position: 100% 50%
+	}
+	100% {
+		background-position: 0% 50%
+	}
+}
+
+@-moz-keyframes Gradient {
+	0% {
+		background-position: 0% 50%
+	}
+	50% {
+		background-position: 100% 50%
+	}
+	100% {
+		background-position: 0% 50%
+	}
+}
+
+@keyframes Gradient {
+	0% {
+		background-position: 0% 50%
+	}
+	50% {
+		background-position: 100% 50%
+	}
+	100% {
+		background-position: 0% 50%
+	}
+}

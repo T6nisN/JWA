@@ -1,9 +1,24 @@
 <?php
 include('session.php');
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+$mysqli = mysqli_connect("localhost", "root", "root", "joharWindow");
+if (mysqli_connect_error()) {
+    die('Connect Error ('.mysqli_connect_errno().') '.mysqli_connect_error());
+  }
 
-$connection = mysql_connect("localhost", "root", "");
-$db = mysql_select_db("joharWindow", $connection);
-$user = $login_session;
+if (!$mysqli)
+  {
+  die('Could not connect: ' . mysqli_error());
+  }
+
+$db = mysqli_select_db($mysqli, 'joharWindow');
+
+if (!$db)
+  {
+  die ("Can\'t use joharWindow : " . mysqli_error());
+  }
+$user = $session_username;
 $friendUsername;
 
 if(isset($_POST['source1'])) {
@@ -27,74 +42,30 @@ if(isset($_POST['source2'],$_POST['friend'])) {
 
 
 function getAllAdjectives(){
-	$query = mysql_query("SELECT value FROM adjectives");	
-		echo '<div class="col-md-8">';
-		while($rowtwo = mysql_fetch_array($query)){
+	$mysqli = mysqli_connect("localhost", "root", "root", 'joharWindow');
+	$query = $mysqli->query("SELECT value FROM adjectives");
+		while($rowtwo = $query->fetch_assoc()){
 		  echo '<div>
-				<input style="width:22%;float:left;" name="adjective" id="btn" class="myButton" type="button"  value="'.$rowtwo['value'].'"/>
+				<input name="adjective" id="btn" class="myButton adjective-button" type="button"  value="'.$rowtwo['value'].'"/>
+				<span class="remove-adjective"></span>
 				</div>';
 		}
-		echo '</div';
 }
-//function getMyFacade(){
-//	global $user;
-//	$query = "SELECT value FROM adjectives WHERE ID IN (SELECT adjectiveID FROM relations WHERE userID =(SELECT id from LOGIN where username ='$user') && lahter!='arena' && lahter!='blindspot' && lahter!='unknown')";	
-//	$result = mysql_query($query);
-//		if ($result){
-//			while ($row = mysql_fetch_assoc($result)) {
-//				foreach($row as $key => $field) {
-//					echo htmlspecialchars($field).' ';
-//					
-//				}
-//			}
-//			
-//		}else{
-//			$err = mysql_error();
-//			die("<br>{$query}<br>*** {$err} ***<br>");
-//		}
-//}
-//function ggetMyArena(){
-//	global $user;
-//	$query = "SELECT value FROM adjectives WHERE ID IN (SELECT adjectiveID FROM relations WHERE userID =(SELECT id from LOGIN where username ='$user') && lahter='arena')";	
-//	$result = mysql_query($query);
-//		if ($result){		
-//			while ($row = mysql_fetch_assoc($result)) {
-//				foreach($row as $key => $field) {
-//				echo htmlspecialchars($field).' ';
-//				}
-//			}
-//		}else{
-//			$err = mysql_error();
-//			die("<br>{$query}<br>*** {$err} ***<br>");
-//		}
-//}
-//function getMyBlindSpot(){
-//	global $user;
-//	$query = "SELECT value FROM adjectives WHERE ID IN (SELECT adjectiveID FROM relations WHERE userID =(SELECT id from LOGIN where username ='$user') && lahter ='blindspot' )";	
-//	$result = mysql_query($query);
-//		if ($result){
-//			while ($row = mysql_fetch_assoc($result)) {
-//				foreach($row as $key => $field) {
-//				echo htmlspecialchars($field).' ';
-//				}
-//			}
-//		}else{
-//			$err = mysql_error();
-//			die("<br>{$query}<br>*** {$err} ***<br>");
-//		}
-//}
 function getMyUnknownAdjectives(){
 	global $user;
-	$query = "SELECT value FROM adjectives WHERE id NOT in (SELECT adjectiveID FROM relations WHERE userID =(SELECT id from LOGIN where username ='$user'))";	
-	$result = mysql_query($query);
+	global $AdjectivesArray;
+	global $mysqli;
+	global $db;
+	$query = "SELECT value FROM adjectives WHERE id NOT in (SELECT adjectiveID FROM relations WHERE userID =(SELECT id from LOGIN where username ='$user'))";
+	$result = $mysqli->query($query);
 		if ($result){
-			while ($row = mysql_fetch_assoc($result)) {
+			while ($row = $result->fetch_assoc()) {
 				foreach($row as $key => $field) {
-				echo htmlspecialchars($field).' ';
+				echo '<span>'.htmlspecialchars($field).'</span>';
 				}
-			}		
+			}
 		}else{
-			$err = mysql_error();
+			$err = mysqli_error();
 			die("<br>{$query}<br>*** {$err} ***<br>");
 		}
 }
@@ -102,28 +73,30 @@ function getMyUnknownAdjectives(){
 function insertMyFacade(){
 		global $user;
 		global $AdjectivesArray;
-		global $connection;
+		global $mysqli;
 		global $db;
-			// Check connection
-			$connection = mysqli_connect("localhost", "root", "");
-			$db = mysqli_select_db($connection, "joharWindow");
-				// Check connection
-			if (!$connection) {
-				die("Connection failed: " . mysqli_connect_error());
+			if (count($AdjectivesArray) == 6 ) {
+				for ($i=0; $i <= 5; $i++){
+				$sql = "INSERT INTO relations (userID, adjectiveID, lahter) VALUES ((SELECT id from LOGIN where username ='$user'), (SELECT id FROM adjectives WHERE value='".$AdjectivesArray[$i]."'), 'facade')";
+				$result = $mysqli->query($sql);
+				}
+				if ($result) {
+					header('Content-type: application/json');
+					$response_array['status'] = 'success';
+					$response_array['statusMessage'] = 'New entry added';
+					echo json_encode($response_array);
+
+				} else {
+					echo "Error: " . $sql . "<br>" . mysqli_error($mysqli);
+				}
+			}else{
+		   header('Content-type: application/json');
+			 $response_array['status'] = 'error';
+			 $response_array['statusMessage'] = 'Missing adjectives ( must be at leat 6 )';
+			 echo json_encode($response_array);
 			}
-			if (count($AdjectivesArray) == 6) {
-			for ($i=0; $i <= 5; $i++){
-			$sql = "INSERT INTO relations (userID, adjectiveID, lahter) VALUES ((SELECT id from LOGIN where username ='$user'), (SELECT id FROM adjectives WHERE value='".$AdjectivesArray[$i]."'), 'facade')";
-			$result = mysqli_query($connection, $sql);
-			}
-			if (mysqli_query($connection, $result)) {
-				echo "New record created successfully";
-			} else {
-				echo "Error: " . $sql . "<br>" . mysqli_error($connection);
-			}
-			}else{ echo ("Liiga vähe omadussõnu");}
-			mysqli_close($connection);
-}	
+			mysqli_close($mysqli);
+}
 function ShowAdjectives(){
 		global $AdjectivesArray;
 		for($s=0; $s <=5; $s++){
@@ -135,172 +108,153 @@ function insertAdjectivesFromFriend(){
 		global $user;
 		global $friendUsername;
 		global $AdjectivesFromFriendArray;
-		print_r($AdjectivesFromFriendArray);
-		//echo $user;
-		//echo($friendUsername);
-			$connection = mysqli_connect("localhost", "root", "");
-			$db = mysqli_select_db($connection, "joharWindow");
-				// Check connection
-			if (!$connection) {
-				die("Connection failed: " . mysqli_connect_error());
-			}
-			if (count($AdjectivesFromFriendArray) == 6) {
-			for ($i=0; $i <= 5; $i++){
-			$sql = "INSERT INTO relations (userID, adjectiveID, lahter) VALUES ((SELECT id from LOGIN where username ='$friendUsername'), (SELECT id FROM adjectives WHERE value='".$AdjectivesFromFriendArray[$i]."'), 'arena')";
-			$result = mysqli_query($connection, $sql);
-			}
-			if (mysqli_query($connection, $result)) {
-				echo "New record created successfully";
-			} else {
-				echo "Error: " . $sql . "<br>" . mysqli_error($connection);
-			}
-			}else{ echo ("Liiga vähe omadussõnu");}
-			mysqli_close($connection);
-			
-	
+		global $mysqli;
+		global $db;
+				if (count($AdjectivesFromFriendArray) == 6 ) {
+					for ($i=0; $i <= 5; $i++){
+					$sql = "INSERT INTO relations (userID, adjectiveID, lahter) VALUES ((SELECT id from LOGIN where username ='$friendUsername'), (SELECT id FROM adjectives WHERE value='".$AdjectivesFromFriendArray[$i]."'), 'facade')";
+					$result = $mysqli->query($sql);
+					}
+					if ($result) {
+						header('Content-type: application/json');
+						$response_array['status'] = 'success';
+						$response_array['statusMessage'] = 'New entry added';
+						echo json_encode($response_array);
+
+					} else {
+						echo "Error: " . $sql . "<br>" . mysqli_error($mysqli);
+					}
+				}else{
+				 header('Content-type: application/json');
+				 $response_array['status'] = 'error';
+				 $response_array['statusMessage'] = 'Missing adjectives ( must be at leat 6 )';
+				 echo json_encode($response_array);
+				}
+				mysqli_close($mysqli);
+
+
 
 }
 function getFriends(){
 	global $user;
-	$query = mysql_query("SELECT username FROM login WHERE ID IN (SELECT friendID FROM friends WHERE userID IN( SELECT id FROM login WHERE username ='$user'))");	
-		echo '<form action="friendTest.php" method="POST">';
-		while($rowtwo = mysql_fetch_array($query)){
-		  echo '<input name="friend" id="WhatButton" type="submit" class="myButton" value="'.$rowtwo['username'].'"/>';
+	$mysqli = mysqli_connect("localhost", "root", "root", 'joharWindow');
+	$query = $mysqli->query("SELECT firstname, lastname, username FROM login WHERE ID IN (SELECT friendID FROM friends WHERE userID IN( SELECT id FROM login WHERE username ='$user'))");
+		if (!$query) {
+	    printf("Error: %s\n", mysqli_error($mysqli));
+	    exit();
 		}
+
+
+		echo '<form action="/test-friend" method="POST">';
+				echo '<ul class="friends-list">';
+					while($rowtwo = $query->fetch_array()){
+						echo '<li>';
+							echo '<p>'.$rowtwo['firstname'].' '.$rowtwo['lastname'];
+						  echo '<input name="friend" id="WhatButton" type="hidden" class="myButton" value="'.$rowtwo['username'].'"/>';
+							echo '<button class="cta-button" style="margin-left:10px;" type="submit">Test</button></p>';
+						echo '</li>';
+					}
+				echo '</ul>';
 		echo '</form>';
+
 }
 function getFriendInfo($friendUsername){
 	global $friendUsername;
-	echo $friendUsername;
-//$query = mysql_query("SELECT * FROM login WHERE ID IN (SELECT friendID FROM friends WHERE userID IN( SELECT id FROM login WHERE username ='$friendUsername'))");	
-//	echo '<form action="friendTest.php" method="POST">';
-//	while($rowtwo = mysql_fetch_array($query)){
-//	  echo '<input name="friend" id="WhatButton" type="submit" class="myButton" value="'.$rowtwo['username'].'"/>';
-//	}
-//	echo '</form>';
-//
+	global $mysqli;
+	//echo $friendUsername;
+	// SQL Query To Fetch Complete Information Of User
+	$ses_sql=$mysqli->query("select * from login where username='$friendUsername'");
+	$result = mysqli_fetch_assoc($ses_sql);
+	$friendInfo = array();
+	$friendInfo['FirstName'] = $result['firstname'];
+	$friendInfo['LastName'] = $result['lastname'];
+	$friendInfo['UserName'] = $result['username'];
+	$friendInfo['Email'] = $result['email'];
+	$friend_created = $result['created'];
+	$date = new DateTime($friend_created);
+	$friend_created = $date->format('d.m.Y');
+	$friendInfo['Created'] = $friend_created;
+
+	return $friendInfo;
 }
 function getMyArena(){
 	global $db;
 	global $user;
-	global $connection;
+	global $mysqli;
 	$facade = array();
 	$arena = array();
-	$query = "SELECT value FROM adjectives WHERE ID IN (SELECT adjectiveID FROM relations WHERE userID =(SELECT id from LOGIN where username ='$user') && lahter='facade')";	
-	$query2 = "SELECT value FROM adjectives WHERE ID IN (SELECT adjectiveID FROM relations WHERE userID =(SELECT id from LOGIN where username ='$user') && lahter='arena')";	
-	$result = mysql_query($query);
-	$result2 = mysql_query($query2);
-			while ($row2 = mysql_fetch_assoc($result)) {
+	$query = "SELECT value FROM adjectives WHERE ID IN (SELECT adjectiveID FROM relations WHERE userID =(SELECT id from LOGIN where username ='$user') && lahter='facade')";
+	$query2 = "SELECT value FROM adjectives WHERE ID IN (SELECT adjectiveID FROM relations WHERE userID =(SELECT id from LOGIN where username ='$user') && lahter='arena')";
+	$result = $mysqli->query($query);
+	$result2 = $mysqli->query($query2);
+			while ($row2 = $result->fetch_assoc()) {
 				foreach($row2 as $key => $facadefield) {
-					//echo htmlspecialchars($facadefield).' ';
 					array_push($facade, $facadefield);
-					
 				}
 			}
-			while ($row2 = mysql_fetch_assoc($result2)) {
+			while ($row2 = $result2->fetch_assoc()) {
 				foreach($row2 as $key => $arenafield) {
-					//echo htmlspecialchars($arenafield).' ';
 					array_push($arena, $arenafield);
 				}
 			}
-			//if($facade == $arena){
-			//	echo ("Need on samad/");
-			//}else{
-			//		echo("need ei ole samad/");
-			//	
-			//}
 			$result3 = array_intersect($facade, $arena);
-			
-				foreach($result3 as $key => $realArena) { 
-					echo htmlspecialchars($realArena).' ';
-					
+				foreach($result3 as $key => $realArena) {
+					echo '<span>'.htmlspecialchars($realArena).'</span>';
 				}
 
-			//print_r($facade);
-			//print_r($arena);
-		
 }
 function getMyFacade(){
 	global $db;
 	global $user;
-	global $connection;
+	global $mysqli;
 	$facade = array();
 	$arena = array();
-	$query = "SELECT value FROM adjectives WHERE ID IN (SELECT adjectiveID FROM relations WHERE userID =(SELECT id from LOGIN where username ='$user') && lahter='facade')";	
-	$query2 = "SELECT value FROM adjectives WHERE ID IN (SELECT adjectiveID FROM relations WHERE userID =(SELECT id from LOGIN where username ='$user') && lahter='arena')";	
-	$result = mysql_query($query);
-	$result2 = mysql_query($query2);
-			while ($row2 = mysql_fetch_assoc($result)) {
+	$query = "SELECT value FROM adjectives WHERE ID IN (SELECT adjectiveID FROM relations WHERE userID =(SELECT id from LOGIN where username ='$user') && lahter='facade')";
+	$query2 = "SELECT value FROM adjectives WHERE ID IN (SELECT adjectiveID FROM relations WHERE userID =(SELECT id from LOGIN where username ='$user') && lahter='arena')";
+	$result = $mysqli->query($query);
+	$result2 = $mysqli->query($query2);
+			while ($row2 = $result->fetch_assoc()) {
 				foreach($row2 as $key => $facadefield) {
-					//echo htmlspecialchars($facadefield).' ';
 					array_push($facade, $facadefield);
-					
 				}
 			}
-			while ($row2 = mysql_fetch_assoc($result2)) {
+			while ($row2 = $result2->fetch_assoc()) {
 				foreach($row2 as $key => $arenafield) {
-					//echo htmlspecialchars($arenafield).' ';
 					array_push($arena, $arenafield);
 				}
 			}
-			//if($facade == $arena){
-			//	echo ("Need on samad/");
-			//}else{
-			//		echo("need ei ole samad/");
-			//	
-			//}
 			$result3 = array_diff($facade, $arena);
-			
-				foreach($result3 as $key => $realFacade) { 
-					echo htmlspecialchars($realFacade).' ';
-					
+				foreach($result3 as $key => $realFacade) {
+					echo '<span>'.htmlspecialchars($realFacade).'</span>';
 				}
 
-			//print_r($facade);
-			//print_r($arena);
-		
 }
 function getMyBlindSpot(){
 	global $db;
 	global $user;
-	global $connection;
+	global $mysqli;
 	$facade = array();
 	$arena = array();
 	$blindspot = array();
-	$query = "SELECT value FROM adjectives WHERE ID IN (SELECT adjectiveID FROM relations WHERE userID =(SELECT id from LOGIN where username ='$user') && lahter='arena')";	
-	$query2 = "SELECT value FROM adjectives WHERE ID IN (SELECT adjectiveID FROM relations WHERE userID =(SELECT id from LOGIN where username ='$user') && lahter='facade')";	
-	$result = mysql_query($query);
-	$result2 = mysql_query($query2);
-			while ($row2 = mysql_fetch_assoc($result)) {
+	$query = "SELECT value FROM adjectives WHERE ID IN (SELECT adjectiveID FROM relations WHERE userID =(SELECT id from LOGIN where username ='$user') && lahter='arena')";
+	$query2 = "SELECT value FROM adjectives WHERE ID IN (SELECT adjectiveID FROM relations WHERE userID =(SELECT id from LOGIN where username ='$user') && lahter='facade')";
+	$result = $mysqli->query($query);
+	$result2 = $mysqli->query($query2);
+			while ($row2 = $result->fetch_assoc()) {
 				foreach($row2 as $key => $arenafield) {
-					//echo htmlspecialchars($facadefield).' ';
 					array_push($arena, $arenafield);
-					
 				}
 			}
-			while ($row2 = mysql_fetch_assoc($result2)) {
+			while ($row2 = $result2->fetch_assoc()) {
 				foreach($row2 as $key => $blindspotfield) {
-					//echo htmlspecialchars($arenafield).' ';
 					array_push($blindspot, $blindspotfield);
 				}
 			}
-			//if($facade == $arena){
-			//	echo ("Need on samad/");
-			//}else{
-			//		echo("need ei ole samad/");
-			//	
-			//}
-			
 			$result3 = array_diff($arena, $blindspot);
-			
-				foreach($result3 as $key => $realBlindSpot) { 
-					echo htmlspecialchars($realBlindSpot).' ';
-					
+				foreach($result3 as $key => $realBlindSpot) {
+					echo '<span>'.htmlspecialchars($realBlindSpot).'</span>';
 				}
 
-			//7print_r($arena);
-			//print_r($blindspot);
-		
 }
 
 ?>

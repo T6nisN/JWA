@@ -11,6 +11,7 @@ function mailToFriends($friend_email){
 $to      = $friend_email;
 $subject = 'Can you help me?';
 $message = $_SESSION['csrf_hash'];
+var_dump($message);
 $headers = 'From: joharwindow@example.com' . "\r\n" .
     'X-Mailer: PHP/' . phpversion();
 
